@@ -50,6 +50,11 @@
 
 <!-- 2. THE VISUAL STYLES AND LAYOUT CONTROL -->
 <style>
+    /* FIX: Hide the original site layout cleanly without using element names */
+    body:not(.unlocked) > *:not(#gate-screen) {
+        display: none !important;
+    }
+
     #gate-screen {
         position: fixed !important;
         top: 0 !important;
@@ -116,15 +121,10 @@
         font-size: 0.9rem !important;
         min-height: 20px !important;
     }
-    /* Hide Eleventy's main layout container globally until unlocked */
-    main, #main, .main, .container {
-        display: none !important;
-    }
 </style>
 
-<!-- 3. DIRECT MATCH VALIDATION SCRIPT (FIXED FOR TIMING) -->
+<!-- 3. DIRECT MATCH VALIDATION SCRIPT -->
 <script>
-    // FIX: Wait for the browser to register elements before running event listeners
     document.addEventListener("DOMContentLoaded", function() {
         const passInput = document.getElementById('pass-input');
         if (passInput) {
@@ -141,13 +141,11 @@
         const errorMsg = document.getElementById('error-msg');
 
         if (input === "r3p0sit0ry@0903") {
+            // FIX: Add the unlocked class to the body to reveal absolutely everything instantly
+            document.body.classList.add('unlocked');
+            
             // Completely hide the lock screen
             document.getElementById('gate-screen').style.setProperty('display', 'none', 'important');
-            
-            // FIX: Overwrite styles to make sure Eleventy layouts reveal properly
-            const revealStyles = document.createElement('style');
-            revealStyles.innerHTML = "main, #main, .main, .container { display: block !important; }";
-            document.head.appendChild(revealStyles);
         } else {
             errorMsg.textContent = 'Invalid key. Please try again.';
             document.getElementById('pass-input').value = '';
